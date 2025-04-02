@@ -9,9 +9,9 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 
 # --- Twilio credentials (use environment variables or secret manager in production) ---
-TWILIO_SID = "YOUR_TWILIO_SID"
-TWILIO_AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN"
-TWILIO_FROM = "YOUR_TWILIO_PHONE"
+TWILIO_SID = st.secrets["TWILIO_SID"]
+TWILIO_AUTH_TOKEN = st.secrets["TWILIO_AUTH_TOKEN"]
+TWILIO_FROM = st.secrets["TWILIO_FROM"]
 TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 
 # --- Dashboard UI ---
