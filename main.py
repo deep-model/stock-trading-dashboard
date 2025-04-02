@@ -15,7 +15,11 @@ TWILIO_FROM = "YOUR_TWILIO_PHONE"
 TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 
 # --- Dashboard UI ---
-st.image("https://upload.wikimedia.org/wikipedia/commons/0/02/Tesla_Motors_logo.svg", width=150)
+col1, col2 = st.columns([1, 6])
+with col1:
+    st.image("uhv_logo.jpg", width=60)
+with col2:
+    st.title("📈 Stock Trading Dashboard")
 st.title("📈 University of Houston - Victoria")
 st.title("📈 UHV 6380 Capstone Project")
 st.title("Stock Trading Dashboard")
