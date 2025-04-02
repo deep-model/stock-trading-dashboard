@@ -15,14 +15,14 @@ TWILIO_FROM = "YOUR_TWILIO_PHONE"
 TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 
 # --- Dashboard UI ---
-'''col1, col2 = st.columns([2, 12])
-with col1:
-    st.image("uhv_logo.jpg", use_container_width=True)
-with col2:
-    st.title("University of Houston - Victoria")
-st.title("COSC 6380 Capstone Project")
-st.title("📈 Stock Trading Dashboard")
-st.title("Matthew Harper")'''
+#col1, col2 = st.columns([2, 12])
+#with col1:
+    #st.image("uhv_logo.jpg", use_container_width=True)
+#with col2:
+    #st.title("University of Houston - Victoria")
+#st.title("COSC 6380 Capstone Project")
+#st.title("📈 Stock Trading Dashboard")
+#st.title("Matthew Harper")'''
 
 st.image("uhv_logo.jpg", use_container_width=True)
 st.title("University of Houston - Victoria")
