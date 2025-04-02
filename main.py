@@ -33,7 +33,7 @@ st.title("📈 Stock Trading Dashboard")
 st.title("by Matthew Harper")
 
 
-stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN"], default=["TSLA"])
+stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
 
 # --- Threshold inputs for each stock ---
 thresholds = {}
@@ -44,6 +44,12 @@ for stock in stocks:
         thresholds[stock] = {"buy": buy, "sell": sell}
 
 selected_stock = st.selectbox("Select stock to display chart:", stocks)
+
+# --- Time and Y-axis adjustment ---
+st.sidebar.markdown("### Chart Controls")
+x_hours = st.sidebar.slider("Select time window (hours):", min_value=1, max_value=24, value=6)
+y_min = st.sidebar.number_input("Y-axis min price:", value=0.0)
+y_max = st.sidebar.number_input("Y-axis max price:", value=0.0)
 
 # --- Send SMS ---
 def send_sms(message):
@@ -133,7 +139,17 @@ for stock in stocks:
             st.info(f"No trade action for {stock}. Price is within thresholds.")
 
         if stock == selected_stock:
-            st.line_chart(data["Close"])
+            # Filter chart data for x-axis window
+            recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
+            fig, ax = plt.subplots()
+            ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
+            ax.set_title(f"{stock} - Price Chart")
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Price")
+            if y_min < y_max:
+                ax.set_ylim([y_min, y_max])
+            ax.legend()
+            st.pyplot(fig)
     else:
         st.error(f"Failed to retrieve stock data for {stock}.")
 
