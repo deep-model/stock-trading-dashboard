@@ -28,7 +28,7 @@ st.image("uhv_logo.jpg", width=200)
 st.title("University of Houston - Victoria")
 st.title("COSC 6380 Capstone Project")
 st.title("📈 Stock Trading Dashboard")
-st.title("Matthew Harper")
+st.title("by Matthew Harper")
 
 
 stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
