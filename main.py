@@ -15,7 +15,7 @@ TWILIO_FROM = "YOUR_TWILIO_PHONE"
 TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 
 # --- Dashboard UI ---
-col1, col2 = st.columns([1, 10])
+col1, col2 = st.columns([2, 10])
 with col1:
     st.image("uhv_logo.jpg", use_container_width=True)
 with col2:
