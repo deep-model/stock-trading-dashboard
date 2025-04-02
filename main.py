@@ -17,7 +17,7 @@ TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 # --- Dashboard UI ---
 col1, col2 = st.columns([1, 6])
 with col1:
-    st.image("uhv_logo.jpg", width=60)
+    st.image("uhv_logo.jpg", use_column_width=True)
 with col2:
     st.title("📈 Stock Trading Dashboard")
 st.title("📈 University of Houston - Victoria")
