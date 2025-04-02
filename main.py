@@ -24,7 +24,7 @@ TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 #st.title("📈 Stock Trading Dashboard")
 #st.title("Matthew Harper")'''
 
-st.image("uhv_logo.jpg", width=10)
+st.image("uhv_logo.jpg", width=50)
 st.title("University of Houston - Victoria")
 st.title("COSC 6380 Capstone Project")
 st.title("📈 Stock Trading Dashboard")
