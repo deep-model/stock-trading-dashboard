@@ -24,11 +24,11 @@ TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 #st.title("📈 Stock Trading Dashboard")
 #st.title("Matthew Harper")'''
 
-st.image("uhv_logo.jpg", use_container_width=True)
-st.title("University of Houston - Victoria", use_container_width=True)
-st.title("COSC 6380 Capstone Project", use_container_width=True)
-st.title("📈 Stock Trading Dashboard", use_container_width=True)
-st.title("Matthew Harper", use_container_width=True)
+st.image("uhv_logo.jpg", width=10)
+st.title("University of Houston - Victoria")
+st.title("COSC 6380 Capstone Project")
+st.title("📈 Stock Trading Dashboard")
+st.title("Matthew Harper")
 
 
 stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
