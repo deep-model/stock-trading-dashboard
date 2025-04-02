@@ -39,6 +39,15 @@ st.title("by Matthew Harper")
 stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
 
 # --- Threshold inputs for each stock ---
+
+# --- User input to add stocks ---
+new_stock = st.text_input("Add a stock symbol to monitor:")
+if new_stock and new_stock.upper() not in st.session_state.user_stocks:
+    st.session_state.user_stocks.append(new_stock.upper())
+
+stocks = st.multiselect("Select stocks to monitor:", st.session_state.user_stocks, default=st.session_state.user_stocks)
+
+# --- Threshold inputs for each stock ---
 thresholds = {}
 for stock in stocks:
     with st.expander(f"Set thresholds for {stock}"):
