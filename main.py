@@ -24,6 +24,9 @@ EMAIL_RECIPIENTS = st.secrets["EMAIL_RECIPIENTS"]
 if "alert_log" not in st.session_state:
     st.session_state.alert_log = []
 
+if "user_stocks" not in st.session_state:
+    st.session_state.user_stocks = ["AAPL", "AMZN", "GOOGL", "META", "MSFT", "NVDA", "TSLA"]
+
 # --- Dashboard UI ---
 
 st.image("uhv_logo.jpg", width=200)
