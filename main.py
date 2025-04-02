@@ -19,7 +19,7 @@ col1, col2 = st.columns([2, 12])
 with col1:
     st.image("uhv_logo.jpg", use_container_width=True)
 with col2:
-    st.title("Univ. of Houston - Victoria")
+    st.title("University of Houston - Victoria")
 st.title("COSC 6380 Capstone Project")
 st.title("📈 Stock Trading Dashboard")
 st.title("Matthew Harper")
