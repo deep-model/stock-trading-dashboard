@@ -1,3 +1,20 @@
+# Don't track secret files
+secrets.env
+
+# Python cache and temp files
+__pycache__/
+*.pyc
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# macOS system file
+.DS_Store
+
+# VSCode workspace
+.vscode/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
