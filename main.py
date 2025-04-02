@@ -24,7 +24,7 @@ st.title("📈 University of Houston - Victoria")
 st.title("📈 UHV 6380 Capstone Project")
 st.title("Stock Trading Dashboard")
 st.title("Matthew Harper")
-st.image('row_2_col_1.jpg', width=60)
+
 
 stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
 selected_stock = st.selectbox("Select stock to display chart:", stocks)
