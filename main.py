@@ -15,7 +15,7 @@ TWILIO_FROM = "YOUR_TWILIO_PHONE"
 TWILIO_RECIPIENTS = ["+19365204521", "+18328393093"]
 
 # --- Dashboard UI ---
-st.title("📈 UHV 6380 Capstone Project Stock Trading Dashboard\
+st.title("📈 UHV 6380 Capstone Project\n Stock Trading Dashboard\n
 Matthew Harper")
 stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
 selected_stock = st.selectbox("Select stock to display chart:", stocks)
