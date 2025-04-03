@@ -97,7 +97,39 @@ def predict_stock(stock):
     })
     st.session_state.predicted_today.add(stock)
 
-#def run_daily_prediction():
+def run_daily_prediction():
+    now = datetime.now()
+    for stock in st.session_state.user_stocks:
+        if stock not in st.session_state.predicted_today:
+            df = yf.download(stock, start="2021-01-01", interval="1d")
+            df = df.reset_index()
+            df['Date'] = pd.to_datetime(df['Date'])
+            scaled_data, scaler = preprocess_data(df)
+            X, Y = create_dataset(scaled_data)
+            split = int(len(X) * 0.8)
+            X_train, X_test = X[:split], X[split:]
+            Y_train, Y_test = Y[:split], Y[split:]
+            model = build_lstm_model((X_train.shape[1], X_train.shape[2]))
+            model.fit(X_train, Y_train, validation_data=(X_test, Y_test), epochs=20,
+                      batch_size=32, callbacks=[EarlyStopping(monitor='val_mae', patience=10)])
+            os.makedirs("models", exist_ok=True)
+            model.save(f"models/{stock}_lstm_model.h5")
+            prediction = model.predict(X_test)
+            Y_actual = scaler.inverse_transform(np.concatenate([
+                np.zeros((len(Y_test), 3)), Y_test.reshape(-1, 1), np.zeros((len(Y_test), 1))
+            ], axis=1))[:, 3]
+            Y_pred = scaler.inverse_transform(np.concatenate([
+                np.zeros((len(prediction), 3)), prediction.reshape(-1, 1), np.zeros((len(prediction), 1))
+            ], axis=1))[:, 3]
+            st.session_state.alert_log.append({
+                "Symbol": stock,
+                "Price": float(Y_pred[-1]),
+                "Trigger": "MODEL_PREDICT",
+                "DateTime": now.strftime("%Y-%m-%d %H:%M:%S")
+            })
+            st.session_state.predicted_today.add(stock)
+
+run_daily_prediction()
 
 # --- Pre-market price prediction from 8:00 AM to 8:30 AM CST ---
 def predict_premarket_prices():
@@ -376,7 +408,7 @@ def log_and_export_predictions():
                 df.loc[df['Symbol'] == symbol, 'MAPE'] = mean_absolute_percentage_error(actuals, predictions)
                 df.loc[df['Symbol'] == symbol, 'RMSE'] = np.sqrt(mean_squared_error(actuals, predictions))
                 df.loc[df['Symbol'] == symbol, 'R2'] = r2_score(actuals, predictions)["Close"].iloc[-1] 
-            if get_stock_price(row['Symbol']).shape[0] > 0 else None,axis=1
+                      
             
         timestamp = now.strftime("%Y%m%d_%H%M")
         csv_path = f"/tmp/prediction_log_{timestamp}.csv"
