@@ -244,9 +244,7 @@ def send_email_with_attachment(file_path):
     msg = EmailMessage()
     msg['Subject'] = 'Daily Trading Alert Summary'
     msg['From'] = EMAIL_SENDER
-    msg.set_content('This is your daily stock action report.
-
-Please find attached the daily trading alert summary.')
+    msg.set_content('This is your daily stock action report. Please find attached the daily trading alert summary.')
 
     with open(file_path, 'rb') as f:
         file_data = f.read()
