@@ -262,8 +262,7 @@ if st.button("📤 Send Prediction Report Now"):
         st.success("Manual prediction report sent and available for download.")
     else:
         st.info("No prediction data available to export.")
-    else:
-        st.info("No prediction data available to export.")
+    
     now = datetime.now()
     if now.hour == 20 and now.minute == 0:  # 4:00 PM EST = 3:00 PM CST
         df = pd.DataFrame([
