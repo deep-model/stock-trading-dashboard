@@ -35,11 +35,6 @@ st.title("COSC 6380 Capstone Project")
 st.title("📈 Stock Trading Dashboard")
 st.title("by Matthew Harper")
 
-
-stocks = st.multiselect("Select stocks to monitor:", ["TSLA", "AAPL", "GOOGL", "MSFT", "AMZN", "PLTR", "NVDA"], default=["TSLA"])
-
-# --- Threshold inputs for each stock ---
-
 # --- User input to add stocks ---
 new_stock = st.text_input("Add a stock symbol to monitor:")
 if new_stock and new_stock.upper() not in st.session_state.user_stocks:
@@ -51,11 +46,9 @@ stocks = st.multiselect("Select stocks to monitor:", st.session_state.user_stock
 thresholds = {}
 for stock in stocks:
     with st.expander(f"Set thresholds for {stock}"):
-        buy = st.number_input(f"{stock} - Buy threshold ($)", value=600.00, step=1.0, key=f"buy_{stock}")
-        sell = st.number_input(f"{stock} - Sell threshold ($)", value=50.00, step=1.0, key=f"sell_{stock}")
+        buy = st.number_input(f"{stock} - Buy threshold ($)", value=305.00, step=1.0, key=f"buy_{stock}")
+        sell = st.number_input(f"{stock} - Sell threshold ($)", value=250.00, step=1.0, key=f"sell_{stock}")
         thresholds[stock] = {"buy": buy, "sell": sell}
-
-selected_stock = st.selectbox("Select stock to display chart:", stocks)
 
 # --- Time and Y-axis adjustment ---
 st.sidebar.markdown("### Chart Controls")
@@ -150,18 +143,18 @@ for stock in stocks:
         else:
             st.info(f"No trade action for {stock}. Price is within thresholds.")
 
-        if stock == selected_stock:
-            # Filter chart data for x-axis window
-            recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
-            fig, ax = plt.subplots()
-            ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
-            ax.set_title(f"{stock} - Price Chart")
-            ax.set_xlabel("Time")
-            ax.set_ylabel("Price")
-            if y_min < y_max:
-                ax.set_ylim([y_min, y_max])
-            ax.legend()
-            st.pyplot(fig)
+        # Always display chart for all monitored stocks
+        st.subheader(f"📊 {stock} Price Chart")
+        recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
+        fig, ax = plt.subplots()
+        ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
+        ax.set_title(f"{stock} - Price Chart")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Price")
+        if y_min < y_max:
+            ax.set_ylim([y_min, y_max])
+        ax.legend()
+        st.pyplot(fig)
     else:
         st.error(f"Failed to retrieve stock data for {stock}.")
 
