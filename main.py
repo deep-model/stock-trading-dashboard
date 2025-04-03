@@ -374,10 +374,9 @@ def log_and_export_predictions():
             if len(predictions) >= 2:
                 df.loc[df['Symbol'] == symbol, 'MAPE'] = mean_absolute_percentage_error(actuals, predictions)
                 df.loc[df['Symbol'] == symbol, 'RMSE'] = np.sqrt(mean_squared_error(actuals, predictions))
-                df.loc[df['Symbol'] == symbol, 'R2'] = r2_score(actuals, predictions)["Close"].iloc[-1]
-            ) if get_stock_price(row['Symbol']).shape[0] > 0 else None,
-            axis=1
-        )
+                df.loc[df['Symbol'] == symbol, 'R2'] = r2_score(actuals, predictions)["Close"].iloc[-1] 
+            if get_stock_price(row['Symbol']).shape[0] > 0 else None,axis=1
+            
         timestamp = now.strftime("%Y%m%d_%H%M")
         csv_path = f"/tmp/prediction_log_{timestamp}.csv"
         df.to_csv(csv_path, index=False)
