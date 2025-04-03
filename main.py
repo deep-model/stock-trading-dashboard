@@ -9,6 +9,10 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
+from streamlit_autorefresh import st_autorefresh
+
+# Auto-refresh every 60 seconds (60000 ms)
+st_autorefresh(interval=60000, limit=None, key="dashboard_refresh")
 
 # --- Load credentials from Streamlit secrets ---
 TWILIO_SID = st.secrets["TWILIO_SID"]
