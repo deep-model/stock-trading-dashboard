@@ -1,0 +1,3 @@
+This is an artificial intelligence based project featuring a LSTM machine learning model that can predict asset prices based on pattern recognition using long and short term dependencies. 
+The model is initially pre-trained and then fine tuned for model inference during daily or intraday trading.
+Imported libraries are included in the requirements.txt and source code in main.py.
