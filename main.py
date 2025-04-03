@@ -28,6 +28,7 @@ EMAIL_SENDER = st.secrets["EMAIL_SENDER"]
 EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 EMAIL_RECIPIENTS = st.secrets["EMAIL_RECIPIENTS"]
 
+
 # --- Initialize alert log ---
 if "alert_log" not in st.session_state:
     st.session_state.alert_log = []
@@ -130,6 +131,12 @@ def run_daily_prediction():
             })
             st.session_state.predicted_today.add(stock)
 
+# --- Get stock price using Yahoo Finance API ---
+def get_stock_price(symbol):
+    stock = yf.Ticker(symbol)
+    data = stock.history(period="1d", interval="1m")
+    return data
+
 run_daily_prediction()
 
 # --- Pre-market price prediction from 8:00 AM to 8:30 AM CST ---
@@ -225,7 +232,7 @@ metric_df = pd.DataFrame([
 if not metric_df.empty:
     for symbol in metric_df['Symbol'].unique():
         symbol_df = metric_df[metric_df['Symbol'] == symbol]
-        actuals = [get_stock_price(symbol)["Close"].iloc[-1]] * len(symbol_df)
+        actuals = [get_stock_price(symbol)["Close"].iloc[-1]] * len(symbol_df) # Moved get_stock_price to the top
         predictions = symbol_df['Price'].tolist()
         if len(predictions) >= 2:
             mape = mean_absolute_percentage_error(actuals, predictions)
@@ -313,11 +320,6 @@ def is_market_hours():
     hour_est = (now.hour - 4) % 24  # Convert UTC to EST
     return 9 <= hour_est < 16
 
-# --- Get stock price using Yahoo Finance API ---
-def get_stock_price(symbol):
-    stock = yf.Ticker(symbol)
-    data = stock.history(period="1d", interval="1m")
-    return data
 
 # --- Display Chart and Check Alerts ---
 for stock in stocks:
@@ -408,9 +410,9 @@ def log_and_export_predictions():
             if len(predictions) >= 2:
                 df.loc[df['Symbol'] == symbol, 'MAPE'] = mean_absolute_percentage_error(actuals, predictions)
                 df.loc[df['Symbol'] == symbol, 'RMSE'] = np.sqrt(mean_squared_error(actuals, predictions))
-                df.loc[df['Symbol'] == symbol, 'R2'] = r2_score(actuals, predictions)["Close"].iloc[-1] 
-                      
-            
+                df.loc[df['Symbol'] == symbol, 'R2'] = r2_score(actuals, predictions)
+
+
         timestamp = now.strftime("%Y%m%d_%H%M")
         csv_path = f"/tmp/prediction_log_{timestamp}.csv"
         df.to_csv(csv_path, index=False)
@@ -426,4 +428,5 @@ log_and_export_predictions()
 
 
 # Refresh every 5 minutes (300000 ms)
+from streamlit import experimental_rerun as st_autorefresh  # Import st_autorefresh
 st_autorefresh(interval=60000, key="datarefresh")
