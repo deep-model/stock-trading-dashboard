@@ -16,6 +16,9 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error, r2_score
+from streamlit_autorefresh import st_autorefresh
+
+
 
 # --- Load credentials from Streamlit secrets ---
 TWILIO_SID = st.secrets["TWILIO_SID"]
@@ -255,3 +258,7 @@ if current_time.hour == 20 and current_time.minute == 0:  # 4:00 PM EST
         send_summary_via_sms(csv_path)
         send_email_with_attachment(csv_path)
         st.success("Daily alert summary exported, emailed, and link sent via SMS.")
+
+
+# Refresh every 5 minutes (300000 ms)
+st_autorefresh(interval=60000, key="datarefresh")
