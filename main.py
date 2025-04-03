@@ -17,6 +17,8 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error, r2_score
+from streamlit_autorefresh import st_autorefresh
+
 
 # --- Load credentials from Streamlit secrets ---
 TWILIO_SID = st.secrets["TWILIO_SID"]
@@ -423,9 +425,6 @@ def log_and_export_predictions():
 log_and_export_predictions()
 
 # --- Export summary CSV when market closes ---
-
-
-
 
 # Refresh every 5 minutes (300000 ms)
 from streamlit import experimental_rerun as st_autorefresh  # Import st_autorefresh
