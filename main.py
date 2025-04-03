@@ -167,13 +167,14 @@ def load_and_predict_realtime():
             "DateTime": now.strftime("%Y-%m-%d %H:%M:%S")
         })
 
-load_and_predict_realtime():
-    now = datetime.now()
-    for stock in st.session_state.user_stocks:
-        if stock not in st.session_state.predicted_today:
-            predict_stock(stock)
+load_and_predict_realtime()
 
-run_daily_prediction()
+now = datetime.now()
+for stock in st.session_state.user_stocks:
+    if stock not in st.session_state.predicted_today:
+        predict_stock(stock)
+
+#run_daily_prediction()
 
 # Display model prediction results for each monitored stock
 st.subheader("📈 Model Prediction Results")
