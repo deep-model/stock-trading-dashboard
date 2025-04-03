@@ -5,3 +5,5 @@ yfinance
 streamlit
 matplotlib
 pandas
+scikit-learn
+
