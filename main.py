@@ -51,8 +51,8 @@ stocks = st.multiselect("Select stocks to monitor:", st.session_state.user_stock
 thresholds = {}
 for stock in stocks:
     with st.expander(f"Set thresholds for {stock}"):
-        buy = st.number_input(f"{stock} - Buy threshold ($)", value=305.00, step=1.0, key=f"buy_{stock}")
-        sell = st.number_input(f"{stock} - Sell threshold ($)", value=250.00, step=1.0, key=f"sell_{stock}")
+        buy = st.number_input(f"{stock} - Buy threshold ($)", value=600.00, step=1.0, key=f"buy_{stock}")
+        sell = st.number_input(f"{stock} - Sell threshold ($)", value=50.00, step=1.0, key=f"sell_{stock}")
         thresholds[stock] = {"buy": buy, "sell": sell}
 
 selected_stock = st.selectbox("Select stock to display chart:", stocks)
