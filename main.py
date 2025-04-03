@@ -82,7 +82,7 @@ def predict_stock(stock):
     # Save the trained model
     model_path = f"models/{stock}_lstm_model.h5"
     os.makedirs("models", exist_ok=True)
-    model.save(model_path), callbacks=[early_stopping])
+    model.save(model_path, callbacks=[early_stopping])
 
     predictions = model.predict(X_test)
     Y_test_actual = scaler.inverse_transform(np.concatenate([np.zeros((len(Y_test), 3)), Y_test.reshape(-1, 1), np.zeros((len(Y_test), 1))], axis=1))[:, 3]
