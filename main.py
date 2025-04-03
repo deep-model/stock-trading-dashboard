@@ -97,7 +97,7 @@ def predict_stock(stock):
     })
     st.session_state.predicted_today.add(stock)
 
-def run_daily_prediction()
+def run_daily_prediction():
 
 # --- Pre-market price prediction from 8:00 AM to 8:30 AM CST ---
 def predict_premarket_prices():
