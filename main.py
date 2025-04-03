@@ -225,7 +225,20 @@ def predict_realtime_prices():
 predict_realtime_prices()
 
 # --- Export prediction log at market close ---
-def export_and_notify_predictions()
+def export_and_notify_predictions():
+    now = datetime.now(timezone('US/Central'))
+    if now.hour == 15 and now.minute == 0:  # 3:00 PM CST
+        df = pd.DataFrame([
+            log for log in st.session_state.alert_log
+            if log["Trigger"] in ["MODEL_PREDICT", "REALTIME_PREDICT", "PREMARKET_PREDICT"]
+        ])
+        if not df.empty:
+            filename = f"prediction_log_{now.strftime('%Y%m%d_%H%M')}.csv"
+            csv_path = f"/tmp/{filename}"
+            df.to_csv(csv_path, index=False)
+            send_summary_via_sms(csv_path)
+            send_email_with_attachment(csv_path)
+            st.success(f"📤 Prediction report sent via SMS and Email: {filename}")
 
 # --- Manual send report button ---
 if st.button("📤 Send Prediction Report Now"):
@@ -234,7 +247,7 @@ if st.button("📤 Send Prediction Report Now"):
         if log["Trigger"] in ["MODEL_PREDICT", "REALTIME_PREDICT", "PREMARKET_PREDICT"]
     ])
     if not df.empty:
-        now = datetime.now()
+        now = datetime.now(timezone('US/Central'))
         filename = f"prediction_log_manual_{now.strftime('%Y%m%d_%H%M')}.csv"
         csv_path = f"/tmp/{filename}"
         df.to_csv(csv_path, index=False)
@@ -248,7 +261,9 @@ if st.button("📤 Send Prediction Report Now"):
         )
         st.success("Manual prediction report sent and available for download.")
     else:
-        st.info("No prediction data available to export."):
+        st.info("No prediction data available to export.")
+    else:
+        st.info("No prediction data available to export.")
     now = datetime.now()
     if now.hour == 20 and now.minute == 0:  # 4:00 PM EST = 3:00 PM CST
         df = pd.DataFrame([
