@@ -61,7 +61,7 @@ def send_sms(message):
     client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
     for recipient in TWILIO_RECIPIENTS:
         client.messages.create(body=message, from_=TWILIO_FROM, to=recipient)
-        st.success(f"SMS sent to {recipient}: {message}")
+        #st.success(f"SMS sent to {recipient}: {message}")
 
 # --- Send Email with CSV Attachment ---
 def send_email_with_attachment(file_path):
