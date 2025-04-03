@@ -15,6 +15,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.models import load_model
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error, r2_score
 
 # --- Load credentials from Streamlit secrets ---
