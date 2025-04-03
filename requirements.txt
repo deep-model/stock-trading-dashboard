@@ -6,4 +6,4 @@ streamlit
 matplotlib
 pandas
 scikit-learn
-
+tensorflow
