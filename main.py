@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from twilio.rest import Client
 import streamlit as st
 import pandas as pd
-import yfinance as yf
+import yfinance as yf 
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
