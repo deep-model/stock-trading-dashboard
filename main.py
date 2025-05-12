@@ -117,8 +117,13 @@ while is_market_hours():
             current_price = data["Close"].iloc[-1]
             
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
-            fig, ax = plt.subplots()
+            import pytz
+from matplotlib.dates import DateFormatter
+
+fig, ax = plt.subplots()
+            recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
             ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
+            ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
 
             if 'trained_model' in st.session_state and 'trained_scaler' in st.session_state:
                 recent_scaled = st.session_state['trained_scaler'].transform(
