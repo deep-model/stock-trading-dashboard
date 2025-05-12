@@ -120,7 +120,7 @@ while is_market_hours():
             import pytz
 from matplotlib.dates import DateFormatter
 
-    fig, ax = plt.subplots()
+fig, ax = plt.subplots()
             recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
             ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
             ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
