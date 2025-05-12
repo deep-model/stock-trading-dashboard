@@ -63,7 +63,7 @@ def send_email_with_attachment(file_path):
     msg = EmailMessage()
     msg['Subject'] = 'Daily Trading Alert Summary'
     msg['From'] = EMAIL_SENDER
-    msg.set_content('This is your daily stock action report.Please find attached the daily trading alert summary.')
+    msg.set_content('This is your daily stock action report. Please find attached the daily trading alert summary.')
 
     with open(file_path, 'rb') as f:
         file_data = f.read()
@@ -143,7 +143,8 @@ while is_market_hours():
                 )[:, 3][0]
             except Exception:
                 predicted_price = current_price  # fallback
-                ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')(f"{stock} - Price Chart")
+            ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')
+            ax.set_title(f"{stock} - Price Chart")
             ax.set_xlabel("Time")
             ax.set_ylabel("Price")
             if y_min < y_max:
