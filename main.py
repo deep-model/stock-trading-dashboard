@@ -132,7 +132,19 @@ while is_market_hours():
                 )[:, 3][0]
                 ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')
 
-            ax.set_title(f"{stock} - Price Chart")
+            
+            try:
+                recent_scaled = st.session_state['trained_scaler'].transform(
+                    recent_data[['Open', 'High', 'Low', 'Close', 'Volume']]
+                )
+                input_data = np.array([recent_scaled])
+                predicted = st.session_state['trained_model'].predict(input_data)
+                predicted_price = st.session_state['trained_scaler'].inverse_transform(
+                    np.concatenate([np.zeros((1, 3)), predicted.reshape(-1, 1), np.zeros((1, 1))], axis=1)
+                )[:, 3][0]
+            except Exception:
+                predicted_price = current_price  # fallback
+            ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')(f"{stock} - Price Chart")
             ax.set_xlabel("Time")
             ax.set_ylabel("Price")
             if y_min < y_max:
@@ -336,4 +348,3 @@ if datetime.now().hour == 8 and datetime.now().minute == 30:
             actual_price = live_df.iloc[-1]['Close'].item()
             movement = "UP" if predicted_price > actual_price else "DOWN"
             st.info(f"{ticker} prediction at 8:30 AM: {movement} (${predicted_price:.2f}) vs actual ${actual_price:.2f}")
-
