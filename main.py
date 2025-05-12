@@ -123,7 +123,10 @@ while is_market_hours():
             
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
             fig, ax = plt.subplots()
-            recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
+            if recent_data.index.tz is None:
+    recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
+else:
+    recent_data = recent_data.tz_convert('America/Chicago')
             ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
             ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
 
