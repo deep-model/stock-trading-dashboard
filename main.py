@@ -43,14 +43,6 @@ if new_stock and new_stock.upper() not in st.session_state.user_stocks:
 
 stocks = st.multiselect("Select stocks to monitor:", st.session_state.user_stocks, default=st.session_state.user_stocks)
 
-# --- Threshold inputs for each stock ---
-thresholds = {}
-for stock in stocks:
-    with st.expander(f"Set thresholds for {stock}"):
-        buy = st.number_input(f"{stock} - Buy threshold ($)", value=600.00, step=1.0, key=f"buy_{stock}")
-        sell = st.number_input(f"{stock} - Sell threshold ($)", value=50.00, step=1.0, key=f"sell_{stock}")
-        thresholds[stock] = {"buy": buy, "sell": sell}
-
 selected_stock = st.selectbox("Select stock to display chart:", stocks)
 
 # --- Time and Y-axis adjustment ---
@@ -100,7 +92,6 @@ def is_market_open_today():
         return "open" in status
     return False
 
-
 # --- Get current hour in Eastern Time (for market hours check) ---
 def is_market_hours():
     now = datetime.utcnow()
@@ -113,39 +104,12 @@ def get_stock_price(symbol):
     data = stock.history(period="1d", interval="1m")
     return data
 
-# --- Display Chart and Check Alerts ---
+# --- Display Chart and Price with Predicted Overlay ---
 for stock in stocks:
     data = get_stock_price(stock)
     if not data.empty:
         current_price = data["Close"].iloc[-1]
         st.metric(label=f"Current {stock} Price", value=f"${current_price:.2f}")
-
-        buy_threshold = thresholds[stock]["buy"]
-        sell_threshold = thresholds[stock]["sell"]
-        now = datetime.now()
-
-        if current_price > buy_threshold:
-            advice = f"BUY signal: {stock} is at ${current_price:.2f}, above ${buy_threshold}"
-            st.warning(advice)
-            send_sms(advice)
-            st.session_state.alert_log.append({
-                "Symbol": stock,
-                "Price": current_price,
-                "Trigger": "BUY",
-                "DateTime": now.strftime("%Y-%m-%d %H:%M:%S")
-            })
-        elif current_price < sell_threshold:
-            advice = f"SELL signal: {stock} is at ${current_price:.2f}, below ${sell_threshold}"
-            st.warning(advice)
-            send_sms(advice)
-            st.session_state.alert_log.append({
-                "Symbol": stock,
-                "Price": current_price,
-                "Trigger": "SELL",
-                "DateTime": now.strftime("%Y-%m-%d %H:%M:%S")
-            })
-        else:
-            st.info(f"No trade action for {stock}. Price is within thresholds.")
 
         if stock == selected_stock:
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
@@ -260,6 +224,29 @@ if is_market_hours() and 'trained_model' in st.session_state and 'trained_scaler
             actual_price = recent_data['Close'].iloc[-1]
             movement = "UP" if predicted_price > actual_price else "DOWN"
             st.write(f"🔁 Real-Time {ticker} Prediction: {movement} | Predicted: ${predicted_price:.2f} | Actual: ${actual_price:.2f}")
+
+            # --- Trigger alerts only on BUY or SELL based on prediction ---
+            now = datetime.now()
+            if movement == "UP":
+                message = f"BUY ALERT: {ticker} predicted to go UP. Current: ${actual_price:.2f}, Predicted: ${predicted_price:.2f}"
+                send_sms(message)
+                st.session_state.alert_log.append({
+                    "Symbol": ticker,
+                    "Price": actual_price,
+                    "Prediction": predicted_price,
+                    "Trigger": "BUY",
+                    "DateTime": now.strftime("%Y-%m-%d %H:%M:%S")
+                })
+            elif movement == "DOWN":
+                message = f"SELL ALERT: {ticker} predicted to go DOWN. Current: ${actual_price:.2f}, Predicted: ${predicted_price:.2f}"
+                send_sms(message)
+                st.session_state.alert_log.append({
+                    "Symbol": ticker,
+                    "Price": actual_price,
+                    "Prediction": predicted_price,
+                    "Trigger": "SELL",
+                    "DateTime": now.strftime("%Y-%m-%d %H:%M:%S")
+                })
 if datetime.now().hour == 8 and datetime.now().minute == 30:
     if is_market_open_today():
         ticker = 'tsla'
