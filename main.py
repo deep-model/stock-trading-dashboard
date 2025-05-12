@@ -9,6 +9,9 @@ import yfinance as yf
 import matplotlib.pyplot as plt
 import smtplib
 from email.message import EmailMessage
+import time
+import pytz
+from matplotlib.dates import DateFormatter
 
 # --- Load credentials from Streamlit secrets ---
 TWILIO_SID = st.secrets["TWILIO_SID"]
@@ -106,8 +109,10 @@ def get_stock_price(symbol):
 
 # --- Display Chart and Price with Predicted Overlay ---
 import time
+import pytz
+from matplotlib.dates import DateFormatter
 
-# --- Create persistent chart placeholders for each stock ---
+# --- Create persistent chart placeholders
 plot_placeholders = {ticker: st.empty() for ticker in st.session_state.user_stocks}
 
 while is_market_hours():
@@ -117,10 +122,7 @@ while is_market_hours():
             current_price = data["Close"].iloc[-1]
             
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
-            import pytz
-from matplotlib.dates import DateFormatter
-
-fig, ax = plt.subplots()
+            fig, ax = plt.subplots()
             recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
             ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
             ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
