@@ -125,10 +125,10 @@ while is_market_hours():
             fig, ax = plt.subplots()
         if recent_data.index.tz is None:
             recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
-else:
-    recent_data = recent_data.tz_convert('America/Chicago')
-            ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
-            ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
+        else:
+            recent_data = recent_data.tz_convert('America/Chicago')
+        ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
+        ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
 
             if 'trained_model' in st.session_state and 'trained_scaler' in st.session_state:
                 recent_scaled = st.session_state['trained_scaler'].transform(
