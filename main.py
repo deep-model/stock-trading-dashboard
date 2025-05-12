@@ -63,7 +63,7 @@ def send_email_with_attachment(file_path):
     msg = EmailMessage()
     msg['Subject'] = 'Daily Trading Alert Summary'
     msg['From'] = EMAIL_SENDER
-    msg.set_content('This is your daily stock action report. Please find attached the daily trading alert summary.')
+    msg.set_content('This is your daily stock action report.Please find attached the daily trading alert summary.')
 
     with open(file_path, 'rb') as f:
         file_data = f.read()
@@ -115,8 +115,7 @@ while is_market_hours():
         data = get_stock_price(stock)
         if not data.empty:
             current_price = data["Close"].iloc[-1]
-            st.metric(label=f"Current {stock} Price", value=f"${current_price:.2f}")
-
+            
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
             fig, ax = plt.subplots()
             ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
