@@ -8,4 +8,10 @@ pandas
 scikit-learn
 tensorflow
 streamlit_autorefresh
+datetime
+smtplib
+EmailMessage
+time
+pytz
+
 
