@@ -105,24 +105,30 @@ def get_stock_price(symbol):
     return data
 
 # --- Display Chart and Price with Predicted Overlay ---
-for stock in stocks:
-    data = get_stock_price(stock)
-    if not data.empty:
-        current_price = data["Close"].iloc[-1]
-        st.metric(label=f"Current {stock} Price", value=f"${current_price:.2f}")
+import time
 
-        if stock == selected_stock:
+while is_market_hours():
+    for stock in st.session_state.user_stocks:
+        data = get_stock_price(stock)
+        if not data.empty:
+            current_price = data["Close"].iloc[-1]
+            st.metric(label=f"Current {stock} Price", value=f"${current_price:.2f}")
+
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
             fig, ax = plt.subplots()
             ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
-            if is_market_hours() and 'trained_model' in st.session_state and 'trained_scaler' in st.session_state:
-                recent_scaled = st.session_state['trained_scaler'].transform(recent_data[['Open', 'High', 'Low', 'Close', 'Volume']])
+
+            if 'trained_model' in st.session_state and 'trained_scaler' in st.session_state:
+                recent_scaled = st.session_state['trained_scaler'].transform(
+                    recent_data[['Open', 'High', 'Low', 'Close', 'Volume']]
+                )
                 input_data = np.array([recent_scaled])
                 predicted = st.session_state['trained_model'].predict(input_data)
                 predicted_price = st.session_state['trained_scaler'].inverse_transform(
                     np.concatenate([np.zeros((1, 3)), predicted.reshape(-1, 1), np.zeros((1, 1))], axis=1)
                 )[:, 3][0]
                 ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')
+
             ax.set_title(f"{stock} - Price Chart")
             ax.set_xlabel("Time")
             ax.set_ylabel("Price")
@@ -130,8 +136,9 @@ for stock in stocks:
                 ax.set_ylim([y_min, y_max])
             ax.legend()
             st.pyplot(fig)
-    else:
-        st.error(f"Failed to retrieve stock data for {stock}.")
+        else:
+            st.error(f"Failed to retrieve stock data for {stock}.")
+    time.sleep(1)
 
 # --- Export summary CSV when market closes ---
 current_time = datetime.utcnow()
