@@ -120,28 +120,18 @@ while is_market_hours():
         data = get_stock_price(stock)
         if not data.empty:
             current_price = data["Close"].iloc[-1]
-            
+
             recent_data = data.last(f"{x_hours}h") if x_hours < 24 else data
             fig, ax = plt.subplots()
-        if recent_data.index.tz is None:
-            recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
-        else:
-            recent_data = recent_data.tz_convert('America/Chicago')
-        ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
-        ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
 
-            if 'trained_model' in st.session_state and 'trained_scaler' in st.session_state:
-                recent_scaled = st.session_state['trained_scaler'].transform(
-                    recent_data[['Open', 'High', 'Low', 'Close', 'Volume']]
-                )
-                input_data = np.array([recent_scaled])
-                predicted = st.session_state['trained_model'].predict(input_data)
-                predicted_price = st.session_state['trained_scaler'].inverse_transform(
-                    np.concatenate([np.zeros((1, 3)), predicted.reshape(-1, 1), np.zeros((1, 1))], axis=1)
-                )[:, 3][0]
-                ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')
+            if recent_data.index.tz is None:
+                recent_data = recent_data.tz_localize('UTC').tz_convert('America/Chicago')
+            else:
+                recent_data = recent_data.tz_convert('America/Chicago')
 
-            
+            ax.plot(recent_data.index, recent_data["Close"], label=f"{stock} Price")
+            ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
+
             try:
                 recent_scaled = st.session_state['trained_scaler'].transform(
                     recent_data[['Open', 'High', 'Low', 'Close', 'Volume']]
@@ -152,7 +142,8 @@ while is_market_hours():
                     np.concatenate([np.zeros((1, 3)), predicted.reshape(-1, 1), np.zeros((1, 1))], axis=1)
                 )[:, 3][0]
             except Exception:
-                predicted_price = current_price  # fallback
+                predicted_price = current_price
+
             ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')
             ax.set_title(f"{stock} - Price Chart")
             ax.set_xlabel("Time")
