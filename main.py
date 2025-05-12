@@ -143,7 +143,7 @@ while is_market_hours():
                 )[:, 3][0]
             except Exception:
                 predicted_price = current_price  # fallback
-            ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')(f"{stock} - Price Chart")
+                ax.axhline(predicted_price, color='red', linestyle='--', label='Predicted Price')(f"{stock} - Price Chart")
             ax.set_xlabel("Time")
             ax.set_ylabel("Price")
             if y_min < y_max:
