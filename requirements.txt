@@ -10,7 +10,7 @@ tensorflow
 streamlit_autorefresh
 datetime
 smtplib
-EmailMessage
+email.message
 time
 pytz
 
