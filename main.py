@@ -99,7 +99,7 @@ def is_market_open_today():
 # --- Get current hour in Eastern Time (for market hours check) ---
 def is_market_hours():
     now = datetime.utcnow()
-    hour_est = (now.hour - 4) % 24
+    hour_est = (now.hour + 8) % 24 # - 4
     return 9 <= hour_est < 16
 
 #7 Live Stock Price --- Get stock price using Yahoo Finance API ---
