@@ -1,3 +1,4 @@
+#1 Load Import Libraries
 import requests
 import os
 from datetime import datetime
@@ -13,7 +14,7 @@ import time
 import pytz
 from matplotlib.dates import DateFormatter
 
-# --- Load credentials from Streamlit secrets ---
+#2 Load Secrets --- Load credentials from Streamlit secrets ---
 TWILIO_SID = st.secrets["TWILIO_SID"]
 TWILIO_AUTH_TOKEN = st.secrets["TWILIO_AUTH_TOKEN"]
 TWILIO_FROM = st.secrets["TWILIO_FROM"]
@@ -23,14 +24,14 @@ EMAIL_SENDER = st.secrets["EMAIL_SENDER"]
 EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 EMAIL_RECIPIENTS = st.secrets["EMAIL_RECIPIENTS"]
 
-# --- Initialize alert log ---
+#3 Session Initialization --- Initialize alert log ---
 if "alert_log" not in st.session_state:
     st.session_state.alert_log = []
 
 if "user_stocks" not in st.session_state:
     st.session_state.user_stocks = ["AAPL", "AMZN", "GOOGL", "META", "MSFT", "NVDA", "TSLA"]
 
-# --- Dashboard UI ---
+#4 UI Title Config --- Dashboard UI ---
 st.image("uhv_logo.jpg", width=200)
 st.title("University of Houston - Victoria")
 st.title("COSC 6380 Capstone Project")
@@ -54,14 +55,14 @@ x_hours = st.sidebar.slider("Select time window (hours):", min_value=1, max_valu
 y_min = st.sidebar.number_input("Y-axis min price:", value=0.0)
 y_max = st.sidebar.number_input("Y-axis max price:", value=0.0)
 
-# --- Send SMS ---
+#5 Send Summary --- Send SMS ---
 def send_sms(message):
     client = Client(TWILIO_SID, TWILIO_AUTH_TOKEN)
     for recipient in TWILIO_RECIPIENTS:
         client.messages.create(body=message, from_=TWILIO_FROM, to=recipient)
         st.success(f"SMS sent to {recipient}: {message}")
 
-# --- Send Email with CSV Attachment ---
+#5 Send Summary --- Send Email with CSV Attachment ---
 def send_email_with_attachment(file_path):
     msg = EmailMessage()
     msg['Subject'] = 'Daily Trading Alert Summary'
@@ -79,12 +80,12 @@ def send_email_with_attachment(file_path):
             smtp.login(EMAIL_SENDER, EMAIL_PASSWORD)
             smtp.send_message(msg)
 
-# --- Send CSV via SMS (link to download) ---
+#5 Send Summary --- Send CSV via SMS (link to download) ---
 def send_summary_via_sms(csv_path):
     message = f"Market closed. Download daily trading alerts: {csv_path}"
     send_sms(message)
 
-# --- Check if market is open today ---
+#6 Is Market Open? --- Check if market is open today ---
 def is_market_open_today():
     url = "https://www.nyse.com/market-status"
     response = requests.get(url)
@@ -101,7 +102,7 @@ def is_market_hours():
     hour_est = (now.hour - 4) % 24
     return 9 <= hour_est < 16
 
-# --- Get stock price using Yahoo Finance API ---
+#7 Live Stock Price --- Get stock price using Yahoo Finance API ---
 def get_stock_price(symbol):
     stock = yf.Ticker(symbol)
     data = stock.history(period="1d", interval="1m")
@@ -112,7 +113,7 @@ import time
 import pytz
 from matplotlib.dates import DateFormatter
 
-# --- Create persistent chart placeholders
+#8 --- Real-Time Price Chart Loop Creates persistent chart placeholders
 plot_placeholders = {ticker: st.empty() for ticker in st.session_state.user_stocks}
 
 while is_market_hours():
@@ -156,7 +157,7 @@ while is_market_hours():
             st.error(f"Failed to retrieve stock data for {stock}.")
     time.sleep(1)
 
-# --- Export summary CSV when market closes ---
+#9 --- Export summary CSV when market closes ---
 current_time = datetime.utcnow()
 if current_time.hour == 20 and current_time.minute == 0:
     if st.session_state.alert_log:
@@ -168,7 +169,7 @@ if current_time.hour == 20 and current_time.minute == 0:
         send_email_with_attachment(csv_path)
         st.success("Daily alert summary exported, emailed, and link sent via SMS.")
 
-# --- LSTM Model Execution at 8:30 AM if Market is Open ---
+#10 --- LSTM Model Execution at 8:30 AM if Market is Open ---
 trained_model = None
 trained_scaler = None
 
@@ -230,7 +231,7 @@ if datetime.now().hour == 8 and datetime.now().minute == 30:
         st.session_state['trained_model'] = trained_model
         st.session_state['trained_scaler'] = trained_scaler
 
-# --- Use Trained Model for Real-Time Predictions Every Minute ---
+#11 --- Use Trained Model for Real-Time Predictions Every Minute ---
 if is_market_hours() and 'trained_model' in st.session_state and 'trained_scaler' in st.session_state:
     trained_model = st.session_state['trained_model']
     trained_scaler = st.session_state['trained_scaler']
@@ -248,7 +249,7 @@ if is_market_hours() and 'trained_model' in st.session_state and 'trained_scaler
             movement = "UP" if predicted_price > actual_price else "DOWN"
             st.write(f"🔁 Real-Time {ticker} Prediction: {movement} | Predicted: ${predicted_price:.2f} | Actual: ${actual_price:.2f}")
 
-            # --- Trigger alerts only on BUY or SELL based on prediction ---
+            #12 --- Trigger alerts only on BUY or SELL based on prediction ---
             now = datetime.now()
             if movement == "UP":
                 message = f"BUY ALERT: {ticker} predicted to go UP. Current: ${actual_price:.2f}, Predicted: ${predicted_price:.2f}"
